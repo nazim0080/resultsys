@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ফলাফল ব্যবস্থাপনা ও বিশ্লেষণ — রোকেয়া মনসুর মহিলা কলেজ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@500;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F4EC;
+  --paper-2:#FFFFFF;
+  --ink:#231F1A;
+  --ink-soft:#5B564C;
+  --maroon:#7A1F2B;
+  --maroon-deep:#5A1620;
+  --gold:#B8892B;
+  --gold-soft:#E7D9B4;
+  --line:#DCD3BE;
+  --pass:#2F6F4E;
+  --fail:#B23A2E;
+  --pass-bg:#E7F1EC;
+  --fail-bg:#F7E8E6;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Noto Sans Bengali','Noto Sans',sans-serif;
+  font-size:14px;
+  line-height:1.55;
+}
+h1,h2,h3,.serif{font-family:'Noto Serif Bengali','Noto Sans Bengali',serif;}
+.app-shell{max-width:1180px;margin:0 auto;padding:20px 20px 60px;}
+
+.masthead{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 26px;
+  background:linear-gradient(135deg,var(--maroon) 0%,var(--maroon-deep) 100%);
+  color:#F6EFDD;
+  border-radius:14px;
+  margin-bottom:18px;
+  box-shadow:0 8px 24px rgba(90,22,32,0.18);
+}
+.masthead .title-block h1{margin:0;font-size:22px;font-weight:700;letter-spacing:.3px;}
+.masthead .title-block p{margin:4px 0 0;font-size:13px;color:#E7D9B4;}
+.badge-seal{
+  padding:10px 14px;border-radius:8px;
+  border:1.5px solid var(--gold-soft);
+  font-family:'Noto Serif Bengali',serif;font-weight:700;font-size:12px;
+  color:#F6EFDD; text-align:center; line-height:1.3;
+  background:rgba(255,255,255,0.06);
+  flex-shrink:0;
+}
+
+.status-pill{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:6px;margin-left:10px;
+  background:rgba(255,255,255,0.12);color:#F6EFDD;
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#8BD3A8;}
+.status-dot.err{background:#E88F84;}
+
+.tabbar{
+  display:flex;gap:6px;flex-wrap:wrap;
+  border-bottom:2px solid var(--line);
+  margin-bottom:20px;
+}
+.tabbar button{
+  border:none;background:transparent;
+  padding:10px 16px;font-size:13.5px;font-weight:600;
+  color:var(--ink-soft);cursor:pointer;border-radius:8px 8px 0 0;
+  font-family:inherit;
+}
+.tabbar button.active{
+  color:var(--maroon);
+  background:var(--paper-2);
+  border:2px solid var(--line);
+  border-bottom:2px solid var(--paper-2);
+  margin-bottom:-2px;
+}
+
+.card{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:20px 22px;
+  margin-bottom:18px;
+}
+.card h2{margin:0 0 4px;font-size:17px;color:var(--maroon-deep);}
+.card .sub{color:var(--ink-soft);font-size:12.5px;margin:0 0 16px;}
+.card h3{font-size:14.5px;margin:18px 0 10px;color:var(--maroon-deep);border-left:3px solid var(--gold);padding-left:8px;}
+
+label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:4px;font-weight:600;}
+input[type=text],input[type=number],select,textarea{
+  font-family:inherit;font-size:13.5px;
+  padding:8px 10px;border:1px solid var(--line);border-radius:7px;
+  background:#FFFEFB;color:var(--ink);width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold-soft);border-color:var(--gold);}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+.row > div{flex:1;min-width:150px;}
+.btn{
+  font-family:inherit;font-weight:700;font-size:13px;
+  padding:9px 18px;border-radius:8px;border:none;cursor:pointer;
+  background:var(--maroon);color:#fff;
+}
+.btn:hover{background:var(--maroon-deep);}
+.btn.secondary{background:#fff;color:var(--maroon);border:1.5px solid var(--maroon);}
+.btn.gold{background:var(--gold);color:#3A2B08;}
+.btn.small{padding:5px 11px;font-size:12px;}
+.btn.danger{background:#fff;color:var(--fail);border:1.5px solid var(--fail);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+
+table{width:100%;border-collapse:collapse;font-size:12.8px;}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:center;}
+th{background:#F1EADA;color:var(--maroon-deep);font-weight:700;}
+td.left,th.left{text-align:left;}
+tr:nth-child(even) td{background:#FBF9F3;}
+.pass-cell{color:var(--pass);font-weight:700;}
+.fail-cell{color:var(--fail);font-weight:700;background:var(--fail-bg)!important;}
+.chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.chip.pass{background:var(--pass-bg);color:var(--pass);}
+.chip.fail{background:var(--fail-bg);color:var(--fail);}
+
+.stat-grid{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
+.stat-card{
+  flex:1;min-width:140px;background:#FBF9F3;border:1px solid var(--line);
+  padding:12px 16px;border-radius:10px;text-align:center;
+}
+.stat-card .val{font-size:22px;font-weight:700;color:var(--maroon-deep);font-family:'Noto Serif Bengali',serif;}
+.stat-card .lbl{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+
+.divider{height:1px;background:var(--line);margin:16px 0;}
+.empty-note{
+  text-align:center;color:var(--ink-soft);padding:30px 10px;font-size:13px;
+  border:1.5px dashed var(--line);border-radius:10px;
+}
+
+.marksheet{
+  border:2.5px solid var(--maroon);border-radius:10px;
+  padding:26px 30px;background:#FFFEFB;position:relative;
+}
+.marksheet::before{
+  content:"";position:absolute;inset:8px;border:1px solid var(--gold-soft);border-radius:6px;pointer-events:none;
+}
+.ms-head{text-align:center;margin-bottom:14px;}
+.ms-head h2{margin:0;color:var(--maroon-deep);font-size:20px;}
+.ms-head p{margin:2px 0 0;color:var(--ink-soft);font-size:12.5px;}
+.ms-info{display:flex;justify-content:space-between;font-size:13px;margin:14px 0;flex-wrap:wrap;gap:6px;}
+.ms-info div span{color:var(--ink-soft);}
+.ms-result-box{
+  margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;
+  border-top:2px solid var(--gold-soft);padding-top:12px;
+}
+.ms-result-box .stat{text-align:center;flex:1;min-width:110px;}
+.ms-result-box .stat .num{font-size:20px;font-weight:700;color:var(--maroon-deep);font-family:'Noto Serif Bengali',serif;}
+.ms-result-box .stat .lab{font-size:11px;color:var(--ink-soft);}
+
+.toast{
+  position:fixed;bottom:22px;right:22px;
+  background:var(--maroon-deep);color:#F6EFDD;
+  padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  box-shadow:0 6px 18px rgba(0,0,0,0.2);z-index:999;
+  opacity:0;transform:translateY(8px);transition:all .25s ease;
+  pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.error{background:var(--fail);}
+
+@media print{
+  .no-print{display:none!important;}
+  body{background:#fff;}
+  .app-shell{max-width:100%;padding:0;margin:0;}
+  .card{border:none;box-shadow:none;padding:0;}
+  .marksheet{page-break-after:always;}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="masthead no-print">
+    <div class="title-block">
+      <h1>রোকেয়া মনসুর মহিলা কলেজ <span class="status-pill" id="connStatus"><span class="status-dot" id="connDot"></span><span id="connText">সংযোগ হচ্ছে…</span></span></h1>
+      <p>কালিগঞ্জ, সাতক্ষীরা — এইচএসসি ফলাফল ব্যবস্থাপনা ও বিশ্লেষণ সিস্টেম</p>
+    </div>
+    <div class="badge-seal">এইচএসসি<br>ফলাফল</div>
+  </div>
+
+  <div class="tabbar no-print" id="tabbar"></div>
+  <div id="tabContent"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== STORAGE HELPER (সার্ভার ব্যাকএন্ড: api.php) ===================== */
+const API_URL = 'api.php';
+
+function showToast(msg, isError){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(()=>{ t.className = 'toast'; }, 2600);
+}
+
+function setConnStatus(ok){
+  const dot = document.getElementById('connDot');
+  const txt = document.getElementById('connText');
+  if(!dot || !txt) return;
+  if(ok){ dot.className = 'status-dot'; txt.textContent = 'সার্ভারে সংরক্ষিত হচ্ছে'; }
+  else { dot.className = 'status-dot err'; txt.textContent = 'সংযোগ ব্যর্থ'; }
+}
+
+async function sget(key, fallback){
+  try{
+    const res = await fetch(API_URL + '?action=get&key=' + encodeURIComponent(key));
+    const data = await res.json();
+    setConnStatus(true);
+    if(data && data.success && data.value !== null && data.value !== undefined){
+      return JSON.parse(data.value);
+    }
+    return fallback;
+  }catch(e){
+    setConnStatus(false);
+    return fallback;
+  }
+}
+
+async function sset(key, value){
+  try{
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'set', key: key, value: JSON.stringify(value) })
+    });
+    const data = await res.json();
+    setConnStatus(!!(data && data.success));
+    if(!data || !data.success) showToast('সংরক্ষণ ব্যর্থ হয়েছে। ইন্টারনেট/সার্ভার পরীক্ষা করুন।', true);
+    return data;
+  }catch(e){
+    setConnStatus(false);
+    showToast('সংরক্ষণ ব্যর্থ হয়েছে। ইন্টারনেট/সার্ভার পরীক্ষা করুন।', true);
+    console.error(e);
+  }
+}
+
+const MASTER_SUBJECTS = [
+  // আবশ্যিক
+  {id:'bangla', name:'বাংলা', papers:2},
+  {id:'english', name:'ইংরেজি', papers:2, noMCQ:true},
+  {id:'ict', name:'তথ্য ও যোগাযোগ প্রযুক্তি (আইসিটি)', papers:1, practical:true, ictSpecial:true},
+  
+  // মানবিক - নৈর্বাচনিক
+  {id:'history', name:'ইতিহাস', group:'মানবিক', papers:2},
+  {id:'islamic_history', name:'ইসলামের ইতিহাস ও সংস্কৃতি', group:'মানবিক', papers:2},
+  {id:'sociology', name:'সমাজবিজ্ঞান', group:'মানবিক', papers:2},
+  {id:'civics', name:'পৌরনীতি ও সুশাসন', group:'মানবিক', papers:2},
+  {id:'economics', name:'অর্থনীতি', group:'মানবিক', papers:2},
+  {id:'geography', name:'ভূগোল', group:'মানবিক', papers:2, practical:true},
+  {id:'logic', name:'যুক্তিবিদ্যা', group:'মানবিক', papers:2},
+
+  // বিজ্ঞান - নৈর্বাচনিক
+  {id:'physics', name:'পদার্থবিজ্ঞান', group:'বিজ্ঞান', papers:2, practical:true},
+  {id:'chemistry', name:'রসায়ন', group:'বিজ্ঞান', papers:2, practical:true},
+  {id:'biology', name:'জীববিজ্ঞান', group:'বিজ্ঞান', papers:2, practical:true},
+  {id:'higher_math', name:'উচ্চতর গণিত', group:'বিজ্ঞান', papers:2, practical:true},
+
+  // বাণিজ্য - নৈর্বাচনিক
+  {id:'accounting', name:'হিসাববিজ্ঞান', group:'বাণিজ্য', papers:2},
+  {id:'business_mgmt', name:'ব্যবসায় ব্যবস্থাপনা ও বিপনন', group:'বাণিজ্য', papers:2},
+  {id:'finance', name:'ফিন্যান্স, ব্যাংকিং ও বীমা', group:'বাণিজ্য', papers:2},
+
+  // ৪র্থ বিষয়সমূহ
+  {id:'psychology', name:'মনোবিজ্ঞান', papers:2, practical:true},
+  {id:'agriculture', name:'কৃষি শিক্ষা', papers:2, practical:true},
+  {id:'islam_studies', name:'ইসলাম শিক্ষা', papers:2}
+];
+
+const EXAM_PRESETS = [
+  "অর্ধবার্ষিকী পরীক্ষা",
+  "১ম বর্ষ সমাপনী",
+  "প্রাক নির্বাচনী",
+  "নির্বাচনী",
+  "মডেল টেস্ট"
+];
+
+const GROUP_SUBJECT_RULES = {
+  'মানবিক': {
+    optional: ['history','islamic_history','sociology','civics','economics','geography','logic'],
+    fourth: ['psychology','agriculture','islam_studies']
+  },
+  'বিজ্ঞান': {
+    optional: ['physics','chemistry','biology','higher_math'],
+    fourth: ['biology','higher_math','agriculture','psychology']
+  },
+  'বাণিজ্য': {
+    optional: ['accounting','business_mgmt','finance'],
+    fourth: ['agriculture','psychology']
+  }
+};
+
+function getHscGradeAndGP(marks, fullMarks) {
+  const percentage = (marks / fullMarks) * 100;
+  if (percentage >= 80) return { grade: 'A+', gp: 5.0 };
+  if (percentage >= 70) return { grade: 'A',  gp: 4.0 };
+  if (percentage >= 60) return { grade: 'A-', gp: 3.5 };
+  if (percentage >= 50) return { grade: 'B',  gp: 3.0 };
+  if (percentage >= 40) return { grade: 'C',  gp: 2.0 };
+  if (percentage >= 33) return { grade: 'D',  gp: 1.0 };
+  return { grade: 'F', gp: 0.0 };
+}
+
+function buildDefaultConfigForExam(fullMode, paperMode){
+  const cfg = {};
+  MASTER_SUBJECTS.forEach(s => {
+    const pCount = (paperMode === 'single' || s.papers === 1) ? 1 : 2;
+    const papers = [];
+    for(let i=0; i<pCount; i++){
+      let mcqFull = 0, cqFull = fullMode;
+      if(s.ictSpecial && fullMode === 100){
+        mcqFull = 30; cqFull = 50;
+      } else if(!s.noMCQ){
+        mcqFull = s.practical ? Math.round(fullMode * 0.25) : Math.round(fullMode * 0.30);
+        cqFull = fullMode - mcqFull - (s.practical ? (fullMode === 100 ? 25 : 12.5) : 0);
+      }
+      papers.push({ label: pCount>1 ? (i===0?'১ম পত্র':'২য় পত্র') : 'পত্র', fullMarks: fullMode, hasMCQ: !s.noMCQ, mcqFull, cqFull });
+    }
+    cfg[s.id] = { paperCount: pCount, papers, practical: { enabled: !!s.practical, fullMarks: s.ictSpecial ? 20 : (s.practical ? 25 : 0) } };
+  });
+  return cfg;
+}
+
+/* ===================== STATE ===================== */
+let state = {
+  exams: [],
+  students: [],
+  marksByExam: {},
+  currentExamId: null,
+  activeTab: 'setup',
+  selectedSubjectId: 'bangla',
+  selectedTabulationSubjectId: 'bangla',
+  entryMode: 'subject', // 'subject' or 'student'
+  selectedStudentRoll: ''
+};
+
+async function loadState(){
+  state.exams = await sget('exams', []);
+  state.students = await sget('students', []);
+  state.currentExamId = await sget('currentExamId', state.exams[0]?.id || null);
+  if(state.students.length && !state.selectedStudentRoll){
+    state.selectedStudentRoll = state.students[0].roll;
+  }
+}
+
+async function loadMarksForExam(examId){
+  if(state.marksByExam[examId]) return state.marksByExam[examId];
+  const m = await sget('marks_'+examId, {});
+  state.marksByExam[examId] = m;
+  return m;
+}
+async function saveMarksForExam(examId){ await sset('marks_'+examId, state.marksByExam[examId] || {}); }
+function uid(p){ return p+'_'+Math.random().toString(36).slice(2,9); }
+
+/* ===================== COMPUTE ENGINE ===================== */
+// কলেজের নির্ধারিত পাশ নম্বরের তালিকা (নির্দিষ্ট পূর্ণমানের জন্য নির্দিষ্ট পাশ নম্বর)।
+// তালিকায় না থাকা যেকোনো পূর্ণমানের জন্য সাধারণ নিয়ম (৩৩% - সিলিং) প্রযোজ্য হবে।
+const FIXED_PASS_MARKS = {
+  25: 8,   // ২৫ নম্বরের এমসিকিউ -> পাশ ৮
+  30: 10,  // ৩০ নম্বরের এমসিকিউ -> পাশ ১০
+  50: 17,  // ৫০ নম্বরের সিকিউ -> পাশ ১৭
+  75: 24   // ৭৫ নম্বরের সিকিউ -> পাশ ২৪
+};
+function passMark(full){
+  if(Object.prototype.hasOwnProperty.call(FIXED_PASS_MARKS, full)) return FIXED_PASS_MARKS[full];
+  return Math.ceil(full * 0.33);
+}
+
+// কোনো অংশের (এমসিকিউ/সিকিউ/পত্র মোট) প্রাপ্ত নম্বর অনুযায়ী শুধু গ্রেড লেটার বের করার জন্য
+function letterGrade(obtained, full){
+  if(!full || full <= 0) return '—';
+  return getHscGradeAndGP(obtained, full).grade;
+}
+
+function computeSubjectResult(exam, subjectId, studentMarks){
+  const cfg = exam.subjectConfig[subjectId];
+  if(!cfg) return null;
+  const sm = (studentMarks && studentMarks[subjectId]) || {};
+  
+  const papers = cfg.papers.map((p, idx)=>{
+    const entry = (sm.papers && sm.papers[idx]) || {};
+    const mcq = p.hasMCQ ? Number(entry.mcq)||0 : 0;
+    const cq = Number(entry.cq)||0;
+    const mcqPass = !p.hasMCQ || mcq >= passMark(p.mcqFull);
+    const cqPass = cq >= passMark(p.cqFull);
+
+    const mcqGrade = p.hasMCQ ? letterGrade(mcq, p.mcqFull) : null;
+    const cqGrade = letterGrade(cq, p.cqFull);
+    const paperObtained = mcq + cq;
+    const paperFull = (p.hasMCQ ? p.mcqFull : 0) + p.cqFull;
+    const paperGrade = letterGrade(paperObtained, paperFull);
+
+    return {
+      label: p.label,
+      mcq, mcqFull: p.mcqFull, hasMCQ: p.hasMCQ, mcqGrade,
+      cq, cqFull: p.cqFull, cqGrade,
+      paperObtained, paperFull, paperGrade,
+      total: paperObtained, full: p.fullMarks, pass: mcqPass && cqPass
+    };
+  });
+
+  let practical = null;
+  if(cfg.practical.enabled){
+    const val = Number(sm.practical)||0;
+    practical = {
+      obtained: val, full: cfg.practical.fullMarks,
+      pass: val >= passMark(cfg.practical.fullMarks),
+      grade: letterGrade(val, cfg.practical.fullMarks)
+    };
+  }
+
+  const subjectFull = papers.reduce((a,p)=>a+p.full, 0) + (practical ? practical.full : 0);
+  const subjectObtained = papers.reduce((a,p)=>a+p.total, 0) + (practical ? practical.obtained : 0);
+  const subjectPass = papers.every(p=>p.pass) && (!practical || practical.pass);
+  const g = subjectPass ? getHscGradeAndGP(subjectObtained, subjectFull) : {grade:'F', gp:0.0};
+  
+  return { papers, practical, subjectFull, subjectObtained, subjectPass, grade: g.grade, gp: g.gp };
+}
+
+function computeStudentResult(exam, student, marksMap){
+  const compulsory = ['bangla','english','ict'];
+  const studentMarks = (marksMap && marksMap[student.roll]) || {};
+  
+  const compRes = compulsory.map(id => ({ subj: MASTER_SUBJECTS.find(s=>s.id===id), res: computeSubjectResult(exam, id, studentMarks) })).filter(r=>r.res);
+  const optRes = (student.optional||[]).map(id => {
+    const s = MASTER_SUBJECTS.find(x=>x.id===id);
+    return s ? { subj: s, res: computeSubjectResult(exam, id, studentMarks) } : null;
+  }).filter(r=>r && r.res);
+  
+  let fourthRes = null;
+  if(student.fourth){
+    const s = MASTER_SUBJECTS.find(x=>x.id===student.fourth);
+    if(s) fourthRes = { subj: s, res: computeSubjectResult(exam, student.fourth, studentMarks) };
+  }
+
+  const overallPass = compRes.every(r=>r.res.subjectPass) && optRes.every(r=>r.res.subjectPass);
+  const totalObtained = compRes.reduce((a,r)=>a+r.res.subjectObtained,0) + optRes.reduce((a,r)=>a+r.res.subjectObtained,0) + (fourthRes? fourthRes.res.subjectObtained:0);
+
+  let gpa = 0;
+  let failedSubjects = [];
+  compRes.forEach(r => { if(!r.res.subjectPass) failedSubjects.push(r.subj.name); });
+  optRes.forEach(r => { if(!r.res.subjectPass) failedSubjects.push(r.subj.name); });
+  if(fourthRes && !fourthRes.res.subjectPass) failedSubjects.push(fourthRes.subj.name + ' (৪র্থ)');
+
+  if(overallPass){
+    const compGP = compRes.reduce((a,r)=>a+r.res.gp, 0);
+    const optGP = optRes.reduce((a,r)=>a+r.res.gp, 0);
+    let fourthBonusGP = 0;
+    if(fourthRes && fourthRes.res.subjectPass){ fourthBonusGP = Math.max(0, fourthRes.res.gp - 2.0); }
+    
+    const count = compRes.length + optRes.length;
+    gpa = count > 0 ? Math.min(5.00, (compGP + optGP + fourthBonusGP) / count) : 0;
+  }
+
+  return { student, compRes, optRes, fourthRes, overallPass, gpa: Math.round(gpa * 100) / 100, totalObtained, failedSubjects };
+}
+
+/* ===================== RENDER: TABS ===================== */
+const TABS = [
+  {id:'setup', label:'১. পরীক্ষা সেটআপ'},
+  {id:'students', label:'২. শিক্ষার্থী তালিকা (বিভাগভিত্তিক)'},
+  {id:'marks', label:'৩. নম্বর ইনপুট'},
+  {id:'tabulation', label:'৪. ফলাফল ট্যাবুলেশন'},
+  {id:'analysis', label:'৫. ফলাফল বিশ্লেষণ'},
+  {id:'marksheet', label:'৬. মার্কশীট'}
+];
+
+function renderTabbar(){
+  const bar = document.getElementById('tabbar');
+  bar.innerHTML = TABS.map(t=>`<button data-tab="${t.id}" class="${state.activeTab===t.id?'active':''}">${t.label}</button>`).join('');
+  bar.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{ state.activeTab=b.dataset.tab; renderAll(); });
+  });
+}
+
+async function renderAll(){
+  renderTabbar();
+  const c = document.getElementById('tabContent');
+  if(state.activeTab==='setup') c.innerHTML = renderSetupTab();
+  else if(state.activeTab==='students') c.innerHTML = renderStudentsTab();
+  else if(state.activeTab==='marks') c.innerHTML = await renderMarksTab();
+  else if(state.activeTab==='tabulation') c.innerHTML = await renderTabulationTab();
+  else if(state.activeTab==='analysis') c.innerHTML = await renderAnalysisTab();
+  else if(state.activeTab==='marksheet') c.innerHTML = await renderMarksheetTab();
+  attachHandlers();
+}
+
+/* ===================== TAB 1: SETUP ===================== */
+function renderSetupTab(){
+  const examOptions = state.exams.map(e=>`<option value="${e.id}" ${e.id===state.currentExamId?'selected':''}>${e.name}</option>`).join('');
+  const presetOptions = EXAM_PRESETS.map(p=>`<option value="${p}">${p}</option>`).join('');
+
+  return `
+  <div class="card">
+    <h2>নতুন পরীক্ষা তৈরি করুন</h2>
+    <div class="row">
+      <div>
+        <label>পরীক্ষার নাম</label>
+        <select id="examNamePreset">${presetOptions}</select>
+      </div>
+      <div>
+        <label>পত্রের ধরন</label>
+        <select id="examPaperMode">
+          <option value="both">উভয় পত্র (১ম ও ২য়)</option>
+          <option value="single">১টি করে পত্র</option>
+        </select>
+      </div>
+      <div>
+        <label>পত্রের পূর্ণমান</label>
+        <select id="examFullMarksMode"><option value="100">১০০</option><option value="50">৫০</option></select>
+      </div>
+      <div style="align-self:flex-end;"><button class="btn" id="btnCreateExam">+ তৈরি করুন</button></div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+      <div><label>বর্তমান পরীক্ষা নির্বাচন</label><select id="examPicker">${examOptions||'<option>নেই</option>'}</select></div>
+      <div style="align-self:flex-end;">${state.currentExamId?'<button class="btn danger" id="btnDeleteExam">পরীক্ষা মুছুন</button>':''}</div>
+    </div>
+  </div>`;
+}
+
+/* ===================== TAB 2: STUDENTS ===================== */
+function getSubjectOptionsForGroup(group, selectedOpt = [], fourthVal = ''){
+  const rules = GROUP_SUBJECT_RULES[group] || GROUP_SUBJECT_RULES['মানবিক'];
+  const optPool = MASTER_SUBJECTS.filter(s=>rules.optional.includes(s.id));
+
+  let fourthIds = [...rules.fourth];
+  if(group === 'বিজ্ঞান'){
+    if(selectedOpt.includes('higher_math')){
+      fourthIds = ['biology', 'agriculture', 'psychology'];
+      if(!fourthVal || fourthVal === 'higher_math') fourthVal = 'biology';
+    } else if(selectedOpt.includes('biology')){
+      fourthIds = ['higher_math', 'agriculture', 'psychology'];
+      if(!fourthVal || fourthVal === 'biology') fourthVal = 'higher_math';
+    }
+  }
+
+  const optSelects = [0,1,2].map(i => {
+    const options = optPool.map(s => `<option value="${s.id}" ${selectedOpt[i]===s.id?'selected':''}>${s.name}</option>`).join('');
+    return `<select data-opt-idx="${i}" class="student-opt-select">${options}</select>`;
+  }).join(' ');
+
+  const fourthPool = MASTER_SUBJECTS.filter(s=>fourthIds.includes(s.id));
+  const fourthOptions = fourthPool.map(s => `<option value="${s.id}" ${fourthVal===s.id?'selected':''}>${s.name}</option>`).join('');
+  const fourthSelect = `<select class="student-fourth-select">${fourthOptions}</select>`;
+
+  return { optSelects, fourthSelect };
+}
+
+function renderStudentsTab(){
+  const rows = state.students.map((st, idx)=>{
+    const rules = GROUP_SUBJECT_RULES[st.group] || GROUP_SUBJECT_RULES['মানবিক'];
+    if(!st.optional || st.optional.length < 3) st.optional = rules.optional.slice(0,3);
+    if(!st.fourth) st.fourth = rules.fourth[0];
+
+    const { optSelects, fourthSelect } = getSubjectOptionsForGroup(st.group, st.optional, st.fourth);
+
+    return `<tr data-student-row="${idx}">
+      <td><input type="text" value="${st.roll}" data-st-field="roll" style="width:70px"></td>
+      <td class="left"><input type="text" value="${st.name}" data-st-field="name"></td>
+      <td>
+        <select data-st-field="group" class="group-changer">
+          <option ${st.group==='মানবিক'?'selected':''}>মানবিক</option>
+          <option ${st.group==='বিজ্ঞান'?'selected':''}>বিজ্ঞান</option>
+          <option ${st.group==='বাণিজ্য'?'selected':''}>বাণিজ্য</option>
+        </select>
+      </td>
+      <td>${optSelects}</td>
+      <td>${fourthSelect}</td>
+      <td><button class="btn danger small" data-del-st="${idx}">×</button></td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="card">
+    <h2>নতুন শিক্ষার্থী যুক্ত করুন</h2>
+    <div class="row">
+      <div><label>রোল</label><input type="text" id="newRoll" placeholder="১০১"></div>
+      <div><label>নাম</label><input type="text" id="newName" placeholder="মোছাঃ খাদিজা খাতুন"></div>
+      <div><label>বিভাগ</label><select id="newGroup"><option>মানবিক</option><option>বিজ্ঞান</option><option>বাণিজ্য</option></select></div>
+      <div style="align-self:flex-end;"><button class="btn" id="btnAddStudent">+ যুক্ত করুন</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>শিক্ষার্থী তালিকা (${state.students.length} জন)</h2>
+    ${state.students.length? `
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>রোল</th><th class="left">নাম</th><th>বিভাগ</th><th>নৈর্বাচনিক বিষয় (৩টি)</th><th>৪র্থ বিষয়</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>
+    <div class="btn-row"><button class="btn gold" id="btnSaveStudents">সংরক্ষণ করুন</button></div>
+    ` : '<div class="empty-note">কোনো শিক্ষার্থী যুক্ত নেই।</div>'}
+  </div>`;
+}
+
+/* ===================== TAB 3: MARKS INPUT ===================== */
+async function renderMarksTab(){
+  if(!state.exams.length || !state.students.length) return '<div class="card"><div class="empty-note">পরীক্ষা ও শিক্ষার্থী যুক্ত করুন।</div></div>';
+  const exam = state.exams.find(e=>e.id===state.currentExamId) || state.exams[0];
+  const marksMap = await loadMarksForExam(exam.id);
+
+  const examOpts = state.exams.map(e=>`<option value="${e.id}" ${e.id===exam.id?'selected':''}>${e.name}</option>`).join('');
+  const isSubjectMode = state.entryMode === 'subject';
+
+  // বিষয়ভিত্তিক মোড রেন্ডারিং
+  if(isSubjectMode){
+    const subjOpts = MASTER_SUBJECTS.map(s=>`<option value="${s.id}" ${s.id===state.selectedSubjectId?'selected':''}>${s.name}</option>`).join('');
+    const subj = MASTER_SUBJECTS.find(s=>s.id===state.selectedSubjectId) || MASTER_SUBJECTS[0];
+    const cfg = exam.subjectConfig[subj.id];
+    const eligible = state.students;
+
+    const rows = eligible.map(st=>{
+      const sm = (marksMap[st.roll] && marksMap[st.roll][subj.id]) || {};
+      const pInputs = cfg.papers.map((p,idx)=>{
+        const e = (sm.papers && sm.papers[idx]) || {};
+        return `
+          ${p.hasMCQ ? `<td><input type="number" data-m="${st.roll}:${idx}:mcq" value="${e.mcq??''}" max="${p.mcqFull}"></td>` : ''}
+          <td><input type="number" data-m="${st.roll}:${idx}:cq" value="${e.cq??''}" max="${p.cqFull}"></td>
+        `;
+      }).join('');
+      const prInput = cfg.practical.enabled ? `<td><input type="number" data-m="${st.roll}:practical" value="${sm.practical??''}" max="${cfg.practical.fullMarks}"></td>` : '';
+
+      return `<tr><td>${st.roll}</td><td class="left">${st.name}</td><td>${st.group}</td>${pInputs}${prInput}</tr>`;
+    }).join('');
+
+    const headers = cfg.papers.map(p=> (p.hasMCQ ? `<th>${p.label} MCQ (/${p.mcqFull})</th>` : '') + `<th>${p.label} CQ (/${p.cqFull})</th>`).join('');
+    const prHeader = cfg.practical.enabled ? `<th>ব্যবহারিক (/${cfg.practical.fullMarks})</th>` : '';
+
+    return `
+    <div class="card">
+      <div class="row">
+        <div><label>পরীক্ষা</label><select id="markExamPicker">${examOpts}</select></div>
+        <div>
+          <label>ইনপুট মোড</label>
+          <select id="entryModePicker">
+            <option value="subject" selected>বিষয়ভিত্তিক ইনপুট</option>
+            <option value="student">শিক্ষার্থীভিত্তিক ইনপুট</option>
+          </select>
+        </div>
+        <div><label>বিষয়</label><select id="markSubjPicker">${subjOpts}</select></div>
+      </div>
+      <h3>${subj.name} — নম্বর ইনপুট (${eligible.length} জন)</h3>
+      ${eligible.length? `
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>রোল</th><th class="left">নাম</th><th>বিভাগ</th>${headers}${prHeader}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      </div>
+      <div class="btn-row"><button class="btn gold" id="btnSaveMarks">নম্বর সংরক্ষণ করুন</button></div>
+      ` : '<div class="empty-note">কোনো শিক্ষার্থী যুক্ত নেই।</div>'}
+    </div>`;
+  } 
+  // শিক্ষার্থীভিত্তিক মোড রেন্ডারিং
+  else {
+    const studentOpts = state.students.map(s=>`<option value="${s.roll}" ${s.roll===state.selectedStudentRoll?'selected':''}>${s.roll} — ${s.name} (${s.group})</option>`).join('');
+    const currentStudent = state.students.find(s=>s.roll===state.selectedStudentRoll) || state.students[0];
+    
+    // শিক্ষার্থীর নির্ধারিত বিষয়সমূহ (আবশ্যিক + ৩টি নৈর্বাচনিক + ১টি ৪র্থ বিষয়)
+    const compulsoryIds = ['bangla','english','ict'];
+    const studentSubjIds = [...compulsoryIds, ...(currentStudent.optional||[]), ...(currentStudent.fourth ? [currentStudent.fourth] : [])];
+    const studentSubjs = studentSubjIds.map(id => MASTER_SUBJECTS.find(s=>s.id===id)).filter(Boolean);
+
+    const stMarks = marksMap[currentStudent.roll] || {};
+
+    const rows = studentSubjs.map((subj, idx) => {
+      const cfg = exam.subjectConfig[subj.id];
+      if(!cfg) return '';
+      const sm = stMarks[subj.id] || {};
+
+      let typeLabel = 'আবশ্যিক';
+      if((currentStudent.optional||[]).includes(subj.id)) typeLabel = 'নৈর্বাচনিক';
+      if(currentStudent.fourth === subj.id) typeLabel = '৪র্থ বিষয়';
+
+      const pInputs = cfg.papers.map((p, pIdx)=>{
+        const e = (sm.papers && sm.papers[pIdx]) || {};
+        return `
+          <div style="display:inline-flex; gap:6px; align-items:center; margin-right:12px;">
+            <span style="font-size:12px; color:var(--ink-soft);">${p.label}:</span>
+            ${p.hasMCQ ? `<input type="number" placeholder="MCQ (/${p.mcqFull})" data-st-m="${subj.id}:${pIdx}:mcq" value="${e.mcq??''}" max="${p.mcqFull}" style="width:90px;">` : ''}
+            <input type="number" placeholder="CQ (/${p.cqFull})" data-st-m="${subj.id}:${pIdx}:cq" value="${e.cq??''}" max="${p.cqFull}" style="width:90px;">
+          </div>
+        `;
+      }).join('');
+
+      const prInput = cfg.practical.enabled ? `
+        <div style="display:inline-flex; gap:6px; align-items:center;">
+          <span style="font-size:12px; color:var(--ink-soft);">ব্যবহারিক:</span>
+          <input type="number" placeholder="/${cfg.practical.fullMarks}" data-st-m="${subj.id}:practical" value="${sm.practical??''}" max="${cfg.practical.fullMarks}" style="width:80px;">
+        </div>
+      ` : '';
+
+      return `
+        <tr>
+          <td class="left"><b>${subj.name}</b> <br><small style="color:var(--ink-soft);">${typeLabel}</small></td>
+          <td class="left">${pInputs} ${prInput}</td>
+        </tr>
+      `;
+    }).join('');
+
+    return `
+    <div class="card">
+      <div class="row">
+        <div><label>পরীক্ষা</label><select id="markExamPicker">${examOpts}</select></div>
+        <div>
+          <label>ইনপুট মোড</label>
+          <select id="entryModePicker">
+            <option value="subject">বিষয়ভিত্তিক ইনপুট</option>
+            <option value="student" selected>শিক্ষার্থীভিত্তিক ইনপুট</option>
+          </select>
+        </div>
+        <div><label>শিক্ষার্থী নির্বাচন</label><select id="markStudentPicker">${studentOpts}</select></div>
+      </div>
+      <h3>${currentStudent.name} (রোল: ${currentStudent.roll}) — বিষয়ভিত্তিক নম্বর ইনপুট</h3>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th class="left" style="width:250px;">বিষয়</th><th class="left">প্রাপ্ত নম্বর (MCQ / CQ / ব্যবহারিক)</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      </div>
+      <div class="btn-row"><button class="btn gold" id="btnSaveStudentMarks">শিক্ষার্থীর নম্বর সংরক্ষণ করুন</button></div>
+    </div>`;
+  }
+}
+
+/* ===================== TAB 4: TABULATION ===================== */
+async function renderTabulationTab(){
+  if(!state.exams.length || !state.students.length) return '<div class="card"><div class="empty-note">তথ্য পাওয়া যায়নি।</div></div>';
+  const exam = state.exams.find(e=>e.id===state.currentExamId) || state.exams[0];
+  const marksMap = await loadMarksForExam(exam.id);
+
+  const examOpts = state.exams.map(e=>`<option value="${e.id}" ${e.id===exam.id?'selected':''}>${e.name}</option>`).join('');
+  const subjOpts = MASTER_SUBJECTS.map(s=>`<option value="${s.id}" ${s.id===state.selectedTabulationSubjectId?'selected':''}>${s.name}</option>`).join('');
+  const subj = MASTER_SUBJECTS.find(s=>s.id===state.selectedTabulationSubjectId) || MASTER_SUBJECTS[0];
+  const cfg = exam.subjectConfig[subj.id];
+
+  const compulsoryIds = ['bangla','english','ict'];
+  const isCompulsory = compulsoryIds.includes(subj.id);
+  const eligibleStudents = state.students.filter(st =>
+    isCompulsory || (st.optional||[]).includes(subj.id) || st.fourth === subj.id
+  );
+
+  const paperHeaderCells = cfg.papers.map(p=>{
+    return (p.hasMCQ ? `<th>${p.label} MCQ</th><th>গ্রেড</th>` : '') +
+      `<th>${p.label} CQ</th><th>গ্রেড</th><th>${p.label} মোট</th><th>গ্রেড</th>`;
+  }).join('');
+  const practicalHeaderCell = cfg.practical.enabled ? `<th>ব্যবহারিক</th><th>গ্রেড</th>` : '';
+
+  const subjectRows = eligibleStudents.map(st=>{
+    const res = computeSubjectResult(exam, subj.id, marksMap[st.roll] || {});
+    if(!res) return '';
+    const paperCells = res.papers.map(p=>{
+      return (p.hasMCQ ? `<td>${p.mcq}/${p.mcqFull}</td><td>${p.mcqGrade}</td>` : '') +
+        `<td>${p.cq}/${p.cqFull}</td><td>${p.cqGrade}</td><td><b>${p.paperObtained}/${p.paperFull}</b></td><td><b>${p.paperGrade}</b></td>`;
+    }).join('');
+    const practicalCell = cfg.practical.enabled
+      ? `<td>${res.practical.obtained}/${res.practical.full}</td><td>${res.practical.grade}</td>`
+      : '';
+    return `<tr>
+      <td>${st.roll}</td>
+      <td class="left">${st.name}</td>
+      <td>${st.group}</td>
+      ${paperCells}${practicalCell}
+      <td><b>${res.subjectObtained}/${res.subjectFull}</b></td>
+      <td><b>${res.grade}</b></td>
+      <td>${res.subjectPass ? '<span class="chip pass">পাশ</span>' : '<span class="chip fail">ফেল</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  const subjectTable = `
+  <div class="card">
+    <div class="row">
+      <div><label>পরীক্ষা</label><select id="tabExamPicker">${examOpts}</select></div>
+      <div><label>বিষয়</label><select id="tabSubjPicker">${subjOpts}</select></div>
+    </div>
+    <h2>বিষয়ভিত্তিক ট্যাবুলেশন শীট — ${subj.name}</h2>
+    <p class="sub">এমসিকিউ ও সিকিউ-এর আলাদা গ্রেড লেটারের পাশাপাশি দুটোর যোগফলের (পত্র মোট / বিষয় মোট) গ্রেড লেটারও দেখানো হয়েছে। (${eligibleStudents.length} জন)</p>
+    ${eligibleStudents.length ? `
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>রোল</th><th class="left">নাম</th><th>বিভাগ</th>
+        ${paperHeaderCells}${practicalHeaderCell}
+        <th>বিষয় মোট</th><th>বিষয় গ্রেড</th><th>ফলাফল</th>
+      </tr></thead>
+      <tbody>${subjectRows}</tbody>
+    </table>
+    </div>
+    ` : '<div class="empty-note">এই বিষয়ে কোনো শিক্ষার্থী নেই।</div>'}
+  </div>`;
+
+  const results = state.students.map(st=>computeStudentResult(exam, st, marksMap));
+  const overallRows = results.map(r=>{
+    return `<tr>
+      <td>${r.student.roll}</td>
+      <td class="left">${r.student.name}</td>
+      <td>${r.student.group}</td>
+      <td>${r.totalObtained}</td>
+      <td><b>${r.overallPass ? r.gpa.toFixed(2) : '0.00'}</b></td>
+      <td>${r.overallPass? '<span class="chip pass">পাশ</span>':'<span class="chip fail">ফেল</span>'}</td>
+      <td style="font-size:11px;color:#B23A2E;">${r.failedSubjects.join(', ')||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const overallTable = `
+  <div class="card">
+    <h2>সার্বিক ফলাফল ট্যাবুলেশন (সকল বিষয় একত্রে) — ${exam.name}</h2>
+    <table>
+      <thead><tr><th>রোল</th><th class="left">নাম</th><th>বিভাগ</th><th>মোট প্রাপ্ত নম্বর</th><th>GPA</th><th>ফলাফল</th><th>অকৃতকার্য বিষয়</th></tr></thead>
+      <tbody>${overallRows}</tbody>
+    </table>
+  </div>`;
+
+  return subjectTable + overallTable;
+}
+
+/* ===================== TAB 5: RESULT ANALYSIS ===================== */
+async function renderAnalysisTab(){
+  if(!state.exams.length || !state.students.length) return '<div class="card"><div class="empty-note">বিশ্লেষণের জন্য কোনো ডেটা নেই।</div></div>';
+  const exam = state.exams.find(e=>e.id===state.currentExamId) || state.exams[0];
+  const marksMap = await loadMarksForExam(exam.id);
+  const results = state.students.map(st=>computeStudentResult(exam, st, marksMap));
+
+  const total = results.length;
+  const passed = results.filter(r=>r.overallPass).length;
+  const failed = total - passed;
+  const passPercentage = total ? ((passed/total)*100).toFixed(1) : 0;
+
+  const gradeCounts = {'A+':0, 'A':0, 'A-':0, 'B':0, 'C':0, 'D':0, 'F':0};
+  results.forEach(r => {
+    if(!r.overallPass) gradeCounts['F']++;
+    else {
+      if(r.gpa === 5.0) gradeCounts['A+']++;
+      else if(r.gpa >= 4.0) gradeCounts['A']++;
+      else if(r.gpa >= 3.5) gradeCounts['A-']++;
+      else if(r.gpa >= 3.0) gradeCounts['B']++;
+      else if(r.gpa >= 2.0) gradeCounts['C']++;
+      else gradeCounts['D']++;
+    }
+  });
+
+  const subjectStats = MASTER_SUBJECTS.map(subj => {
+    let pCount = 0, fCount = 0;
+    results.forEach(r => {
+      const allSubjs = [...r.compRes, ...r.optRes, ...(r.fourthRes?[r.fourthRes]:[])];
+      const match = allSubjs.find(x=>x.subj.id===subj.id);
+      if(match){
+        if(match.res.subjectPass) pCount++;
+        else fCount++;
+      }
+    });
+    if(pCount + fCount === 0) return null;
+    return { name: subj.name, pass: pCount, fail: fCount, total: pCount+fCount, rate: (((pCount)/(pCount+fCount))*100).toFixed(1) };
+  }).filter(Boolean);
+
+  const subjRows = subjectStats.map(s => `
+    <tr>
+      <td class="left">${s.name}</td>
+      <td>${s.total}</td>
+      <td class="pass-cell">${s.pass}</td>
+      <td class="fail-cell">${s.fail}</td>
+      <td><b>${s.rate}%</b></td>
+    </tr>
+  `).join('');
+
+  return `
+  <div class="card">
+    <h2>সামগ্রিক ফলাফল পরিসংখ্যান — ${exam.name}</h2>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="val">${total}</div><div class="lbl">মোট পরীক্ষার্থী</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--pass);">${passed}</div><div class="lbl">উত্তীর্ণ (পাশ)</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--fail);">${failed}</div><div class="lbl">অকৃতকার্য (ফেল)</div></div>
+      <div class="stat-card"><div class="val">${passPercentage}%</div><div class="lbl">পাসের হার</div></div>
+    </div>
+
+    <h3>গ্রেড অনুযায়ী শিক্ষার্থীর সংখ্যা</h3>
+    <table>
+      <thead><tr><th>A+ (5.00)</th><th>A (4.00)</th><th>A- (3.50)</th><th>B (3.00)</th><th>C (2.00)</th><th>D (1.00)</th><th>F (0.00)</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>${gradeCounts['A+']}</b></td><td>${gradeCounts['A']}</td><td>${gradeCounts['A-']}</td>
+          <td>${gradeCounts['B']}</td><td>${gradeCounts['C']}</td><td>${gradeCounts['D']}</td>
+          <td style="color:var(--fail);">${gradeCounts['F']}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px;">বিষয়ওয়ারী পাশ-ফেল পরিসংখ্যান</h3>
+    <table>
+      <thead><tr><th class="left">বিষয়</th><th>মোট অংশগ্রাহক</th><th>পাশ</th><th>ফেল</th><th>পাসের হার</th></tr></thead>
+      <tbody>${subjRows}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ===================== TAB 6: MARKSHEET ===================== */
+async function renderMarksheetTab(){
+  if(!state.exams.length || !state.students.length) return '<div class="card"><div class="empty-note">তথ্য পাওয়া যায়নি।</div></div>';
+  const exam = state.exams.find(e=>e.id===state.currentExamId) || state.exams[0];
+  const marksMap = await loadMarksForExam(exam.id);
+  const studentOpts = state.students.map(s=>`<option value="${s.roll}">${s.roll} — ${s.name}</option>`).join('');
+
+  return `
+  <div class="card no-print">
+    <div class="row">
+      <div><label>শিক্ষার্থী নির্বাচন করুন</label><select id="msStudentPicker">${studentOpts}</select></div>
+      <div style="align-self:flex-end;"><button class="btn secondary" onclick="window.print()">প্রিন্ট করুন</button></div>
+    </div>
+  </div>
+  <div id="marksheetView"></div>`;
+}
+
+function renderSingleMarksheet(studentRoll, exam, marksMap){
+  const student = state.students.find(s=>s.roll===studentRoll);
+  if(!student) return '';
+  const r = computeStudentResult(exam, student, marksMap);
+
+  const buildDetailRows = (list, typeLabel) => list.map(item=>{
+    const subjName = item.subj.name;
+    const res = item.res;
+    let rows = '';
+
+    res.papers.forEach(p=>{
+      const paperTag = res.papers.length > 1 ? ` — ${p.label}` : '';
+      rows += `
+        <tr>
+          <td class="left">${subjName}${paperTag} <small style="color:var(--ink-soft);">(${typeLabel})</small></td>
+          <td>${p.hasMCQ ? (p.mcq+'/'+p.mcqFull) : '—'}</td>
+          <td>${p.hasMCQ ? p.mcqGrade : '—'}</td>
+          <td>${p.cq}/${p.cqFull}</td>
+          <td>${p.cqGrade}</td>
+          <td><b>${p.paperObtained}/${p.paperFull}</b></td>
+          <td><b>${p.paperGrade}</b></td>
+          <td></td>
+        </tr>`;
+    });
+
+    if(res.practical){
+      rows += `
+        <tr>
+          <td class="left">${subjName} — ব্যবহারিক <small style="color:var(--ink-soft);">(${typeLabel})</small></td>
+          <td>—</td><td>—</td>
+          <td>${res.practical.obtained}/${res.practical.full}</td>
+          <td>${res.practical.grade}</td>
+          <td><b>${res.practical.obtained}/${res.practical.full}</b></td>
+          <td><b>${res.practical.grade}</b></td>
+          <td></td>
+        </tr>`;
+    }
+
+    rows += `
+      <tr style="background:#F1EADA;">
+        <td class="left"><b>${subjName} — সর্বমোট</b></td>
+        <td colspan="4"></td>
+        <td><b>${res.subjectObtained}/${res.subjectFull}</b></td>
+        <td><b>${res.grade}</b></td>
+        <td><b>${res.gp.toFixed(2)}</b></td>
+      </tr>`;
+
+    return rows;
+  }).join('');
+
+  return `
+  <div class="marksheet">
+    <div class="ms-head">
+      <h2>রোকেয়া মনসুর মহিলা কলেজ</h2>
+      <p>কালিগঞ্জ, সাতক্ষীরা</p>
+      <h3 style="margin:8px 0 0;color:var(--maroon-deep);">${exam.name} — নম্বরপত্র</h3>
+    </div>
+    <div class="ms-info">
+      <div><span>রোল: </span><b>${student.roll}</b></div>
+      <div><span>নাম: </span><b>${student.name}</b></div>
+      <div><span>বিভাগ: </span><b>${student.group}</b></div>
+    </div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th class="left">বিষয় / পত্র</th>
+        <th>এমসিকিউ</th><th>গ্রেড</th>
+        <th>সিকিউ</th><th>গ্রেড</th>
+        <th>মোট</th><th>গ্রেড</th>
+        <th>GP</th>
+      </tr></thead>
+      <tbody>
+        ${buildDetailRows(r.compRes, 'আবশ্যিক')}
+        ${buildDetailRows(r.optRes, 'নৈর্বাচনিক')}
+        ${r.fourthRes ? buildDetailRows([r.fourthRes], '৪র্থ বিষয়') : ''}
+      </tbody>
+    </table>
+    </div>
+    <div class="ms-result-box">
+      <div class="stat"><div class="num">${r.totalObtained}</div><div class="lab">মোট নম্বর</div></div>
+      <div class="stat"><div class="num">${r.overallPass? r.gpa.toFixed(2) : '0.00'}</div><div class="lab">GPA</div></div>
+      <div class="stat"><div class="num" style="color:${r.overallPass?'var(--pass)':'var(--fail)'}">${r.overallPass?'উত্তীর্ণ':'অনুত্তীর্ণ'}</div><div class="lab">ফলাফল</div></div>
+    </div>
+  </div>`;
+}
+
+/* ===================== EVENT HANDLERS ===================== */
+function attachHandlers(){
+  const btnCreateExam = document.getElementById('btnCreateExam');
+  if(btnCreateExam){
+    btnCreateExam.addEventListener('click', async ()=>{
+      const name = document.getElementById('examNamePreset').value;
+      const paperMode = document.getElementById('examPaperMode').value;
+      const fullMode = Number(document.getElementById('examFullMarksMode').value);
+      const id = uid('exam');
+      const subjectConfig = buildDefaultConfigForExam(fullMode, paperMode);
+      state.exams.push({id, name, paperMode, fullMarksMode: fullMode, subjectConfig});
+      state.currentExamId = id;
+      await sset('exams', state.exams);
+      await sset('currentExamId', id);
+      showToast('পরীক্ষা তৈরি হয়েছে।');
+      renderAll();
+    });
+  }
+
+  const examPicker = document.getElementById('examPicker');
+  if(examPicker){
+    examPicker.addEventListener('change', async ()=>{
+      state.currentExamId = examPicker.value;
+      await sset('currentExamId', state.currentExamId);
+      renderAll();
+    });
+  }
+
+  const btnDeleteExam = document.getElementById('btnDeleteExam');
+  if(btnDeleteExam){
+    btnDeleteExam.addEventListener('click', async ()=>{
+      if(!confirm('আপনি কি এই পরীক্ষাটি মুছে ফেলতে চান?')) return;
+      state.exams = state.exams.filter(e=>e.id!==state.currentExamId);
+      state.currentExamId = state.exams[0]?.id || null;
+      await sset('exams', state.exams);
+      await sset('currentExamId', state.currentExamId);
+      showToast('পরীক্ষা মুছে ফেলা হয়েছে।');
+      renderAll();
+    });
+  }
+
+  const btnAddStudent = document.getElementById('btnAddStudent');
+  if(btnAddStudent){
+    btnAddStudent.addEventListener('click', async ()=>{
+      const roll = document.getElementById('newRoll').value.trim();
+      const name = document.getElementById('newName').value.trim();
+      const group = document.getElementById('newGroup').value;
+      if(!roll || !name) return;
+      const rules = GROUP_SUBJECT_RULES[group];
+      state.students.push({ roll, name, group, optional: rules.optional.slice(0,3), fourth: rules.fourth[0] });
+      await sset('students', state.students);
+      if(!state.selectedStudentRoll) state.selectedStudentRoll = roll;
+      showToast('শিক্ষার্থী যুক্ত হয়েছে।');
+      renderAll();
+    });
+  }
+
+  document.querySelectorAll('[data-del-st]').forEach(btn => {
+    btn.addEventListener('click', async (e)=>{
+      const idx = e.target.dataset.delSt;
+      state.students.splice(idx, 1);
+      await sset('students', state.students);
+      if(state.students.length) state.selectedStudentRoll = state.students[0].roll;
+      renderAll();
+    });
+  });
+
+  document.querySelectorAll('.group-changer').forEach(sel => {
+    sel.addEventListener('change', (e)=>{
+      const row = e.target.closest('tr');
+      const idx = row.dataset.studentRow;
+      state.students[idx].group = e.target.value;
+      const rules = GROUP_SUBJECT_RULES[e.target.value];
+      state.students[idx].optional = rules.optional.slice(0,3);
+      state.students[idx].fourth = rules.fourth[0];
+      renderAll();
+    });
+  });
+
+  document.querySelectorAll('.student-opt-select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const row = e.target.closest('tr');
+      const idx = row.dataset.studentRow;
+      const st = state.students[idx];
+      const opts = [];
+      row.querySelectorAll('.student-opt-select').forEach(s => opts.push(s.value));
+      st.optional = opts;
+      
+      if(st.group === 'বিজ্ঞান'){
+        if(opts.includes('higher_math')){
+          st.fourth = 'biology';
+        } else if(opts.includes('biology')){
+          st.fourth = 'higher_math';
+        }
+        renderAll();
+      }
+    });
+  });
+
+  const btnSaveStudents = document.getElementById('btnSaveStudents');
+  if(btnSaveStudents){
+    btnSaveStudents.addEventListener('click', async ()=>{
+      document.querySelectorAll('[data-student-row]').forEach(row=>{
+        const idx = row.dataset.studentRow;
+        state.students[idx].roll = row.querySelector('[data-st-field="roll"]').value;
+        state.students[idx].name = row.querySelector('[data-st-field="name"]').value;
+        const opts = [];
+        row.querySelectorAll('.student-opt-select').forEach(s=>opts.push(s.value));
+        state.students[idx].optional = opts;
+        state.students[idx].fourth = row.querySelector('.student-fourth-select').value;
+      });
+      await sset('students', state.students);
+      showToast('শিক্ষার্থী তালিকা সফলভাবে সংরক্ষিত হয়েছে।');
+    });
+  }
+
+  const tabExamPicker = document.getElementById('tabExamPicker');
+  if(tabExamPicker){
+    tabExamPicker.addEventListener('change', async ()=>{
+      state.currentExamId = tabExamPicker.value;
+      await sset('currentExamId', state.currentExamId);
+      renderAll();
+    });
+  }
+
+  const tabSubjPicker = document.getElementById('tabSubjPicker');
+  if(tabSubjPicker){
+    tabSubjPicker.addEventListener('change', ()=>{
+      state.selectedTabulationSubjectId = tabSubjPicker.value;
+      renderAll();
+    });
+  }
+
+  const markExamPicker = document.getElementById('markExamPicker');
+  if(markExamPicker){
+    markExamPicker.addEventListener('change', async ()=>{
+      state.currentExamId = markExamPicker.value;
+      await sset('currentExamId', state.currentExamId);
+      renderAll();
+    });
+  }
+
+  const entryModePicker = document.getElementById('entryModePicker');
+  if(entryModePicker){
+    entryModePicker.addEventListener('change', ()=>{
+      state.entryMode = entryModePicker.value;
+      renderAll();
+    });
+  }
+
+  const markSubjPicker = document.getElementById('markSubjPicker');
+  if(markSubjPicker){
+    markSubjPicker.addEventListener('change', ()=>{ state.selectedSubjectId = markSubjPicker.value; renderAll(); });
+  }
+
+  const markStudentPicker = document.getElementById('markStudentPicker');
+  if(markStudentPicker){
+    markStudentPicker.addEventListener('change', ()=>{ state.selectedStudentRoll = markStudentPicker.value; renderAll(); });
+  }
+
+  // বিষয়ভিত্তিক নম্বর সংরক্ষণ
+  const btnSaveMarks = document.getElementById('btnSaveMarks');
+  if(btnSaveMarks){
+    btnSaveMarks.addEventListener('click', async ()=>{
+      const exam = state.exams.find(e=>e.id===state.currentExamId);
+      const mm = await loadMarksForExam(exam.id);
+      const subjId = state.selectedSubjectId;
+
+      document.querySelectorAll('[data-m]').forEach(inp => {
+        const [roll, pIdx, field] = inp.dataset.m.split(':');
+        if(!mm[roll]) mm[roll] = {};
+        if(!mm[roll][subjId]) mm[roll][subjId] = { papers: [] };
+
+        if(pIdx === 'practical'){
+          mm[roll][subjId].practical = Number(inp.value)||0;
+        } else {
+          const idx = Number(pIdx);
+          if(!mm[roll][subjId].papers[idx]) mm[roll][subjId].papers[idx] = {};
+          mm[roll][subjId].papers[idx][field] = Number(inp.value)||0;
+        }
+      });
+
+      await saveMarksForExam(exam.id);
+      showToast('নম্বর সফলভাবে সংরক্ষিত হয়েছে।');
+    });
+  }
+
+  // শিক্ষার্থীভিত্তিক নম্বর সংরক্ষণ
+  const btnSaveStudentMarks = document.getElementById('btnSaveStudentMarks');
+  if(btnSaveStudentMarks){
+    btnSaveStudentMarks.addEventListener('click', async ()=>{
+      const exam = state.exams.find(e=>e.id===state.currentExamId);
+      const mm = await loadMarksForExam(exam.id);
+      const roll = state.selectedStudentRoll;
+
+      if(!mm[roll]) mm[roll] = {};
+
+      document.querySelectorAll('[data-st-m]').forEach(inp => {
+        const [subjId, pIdx, field] = inp.dataset.stM.split(':');
+        if(!mm[roll][subjId]) mm[roll][subjId] = { papers: [] };
+
+        if(pIdx === 'practical'){
+          mm[roll][subjId].practical = Number(inp.value)||0;
+        } else {
+          const idx = Number(pIdx);
+          if(!mm[roll][subjId].papers[idx]) mm[roll][subjId].papers[idx] = {};
+          mm[roll][subjId].papers[idx][field] = Number(inp.value)||0;
+        }
+      });
+
+      await saveMarksForExam(exam.id);
+      showToast('শিক্ষার্থীর সমস্ত নম্বর সফলভাবে সংরক্ষিত হয়েছে।');
+    });
+  }
+
+  const msStudentPicker = document.getElementById('msStudentPicker');
+  if(msStudentPicker){
+    const updateMs = async ()=>{
+      const exam = state.exams.find(e=>e.id===state.currentExamId);
+      const marksMap = await loadMarksForExam(exam.id);
+      document.getElementById('marksheetView').innerHTML = renderSingleMarksheet(msStudentPicker.value, exam, marksMap);
+    };
+    msStudentPicker.addEventListener('change', updateMs);
+    updateMs();
+  }
+}
+
+(async function init(){
+  await loadState();
+  renderAll();
+})();
+</script>
+</body>
+</html>
